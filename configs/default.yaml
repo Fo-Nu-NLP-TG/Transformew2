@@ -1,0 +1,33 @@
+# Default configuration for TransformEw2
+
+data:
+  data_dir: "./data/processed"
+  src_lang: "ewe"
+  tgt_lang: "english"
+  apply_stoplist: true  # Enable stoplist filtering by default
+
+model:
+  name: "transformew2"
+  encoder_layers: 6
+  decoder_layers: 6
+  attention_heads: 8
+  embedding_dim: 512
+  feedforward_dim: 2048
+  dropout: 0.1
+  max_length: 128
+
+training:
+  output_dir: "./outputs"
+  batch_size: 32
+  epochs: 50
+  learning_rate: 0.0001
+  warmup_steps: 4000
+  gradient_accumulation_steps: 4
+  early_stopping_patience: 5
+  save_every: 5000
+  eval_every: 1000
+
+tokenizer:
+  vocab_size_src: 16000  # Smaller vocab for Ewe
+  vocab_size_tgt: 32000  # Larger vocab for English
+  model_type: "bpe"
