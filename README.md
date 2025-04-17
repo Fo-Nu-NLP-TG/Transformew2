@@ -30,28 +30,39 @@ pip install -r requirements.txt
 ```
 TransformEw2/
 ├── data_processing/           # Data preprocessing utilities
+│   ├── create_splits.py       # Dataset splitting utilities
+│   ├── data_augmentation.py   # Data augmentation techniques
 │   ├── data_cleaner.py        # Text cleaning and filtering
+│   ├── dataset_loader.py      # Dataset loading utilities
+│   ├── dataset_splitter.py    # Dataset splitting implementation
+│   ├── generate_stoplists.py  # Stoplist generation script
+│   ├── load_tokenizers.py     # Tokenizer loading utilities
+│   ├── run_tokenizer_training.py # Tokenizer training script
 │   ├── stoplist_generator.py  # Stopword generation for Ewe/English
 │   ├── tokenizer_trainer.py   # Tokenizer training utilities
-│   ├── data_augmentation.py   # Data augmentation techniques
-│   └── dataset_loader.py      # Dataset loading and preparation
-├── model/                     # Model architecture
-│   ├── transformer.py         # Core transformer implementation
-│   ├── encoder.py             # Encoder implementation
-│   ├── decoder.py             # Decoder implementation
-│   └── attention.py           # Attention mechanisms
-├── training/                  # Training utilities
-│   ├── trainer.py             # Training loop implementation
-│   ├── optimizer.py           # Custom optimizers and schedules
-│   └── metrics.py             # Evaluation metrics
+│   └── transformer_dataset.py # Dataset preparation for transformer
 ├── scripts/                   # Utility scripts
 │   ├── preprocess_data.py     # Data preprocessing pipeline
-│   ├── train_model.py         # Model training script
-│   └── translate.py           # Translation inference script
+│   └── train_model.py         # Model training script
 ├── configs/                   # Configuration files
 │   └── default.yaml           # Default configuration
+├── tests/                     # Test suite
+│   ├── __init__.py            # Makes tests a package
+│   └── test_data_augmentation.py # Tests for data augmentation
+├── Transformew1/              # Previous implementation (reference)
+│   ├── encode_decode.py       # Encoding/decoding utilities
+│   ├── inference.py           # Inference utilities
+│   ├── model_utils.py         # Model utility functions
+│   ├── training.py            # Training utilities
+│   ├── train_transformer_cli.py # CLI for training
+│   ├── train_transformer.py   # Training implementation
+│   ├── translate.py           # Translation utilities
+│   └── visualization.py       # Visualization utilities
+├── docs/                      # Documentation
 ├── requirements.txt           # Project dependencies
-└── TRANSFORMEW2_IMPROVEMENTS.md  # Detailed improvements documentation
+├── LICENSE                    # MIT License
+├── TRANSFORMEW1_ISSUES.md     # Issues with previous implementation
+└── TRANSFORMEW2_IMPROVEMENTS.md # Detailed improvements documentation
 ```
 
 ## Usage
@@ -79,16 +90,6 @@ python scripts/train_model.py
 python scripts/train_model.py --config configs/custom.yaml
 ```
 
-### Translation
-
-```bash
-# Translate a single sentence
-python scripts/translate.py --input "Ewe text to translate"
-
-# Translate a file
-python scripts/translate.py --input_file path/to/input.txt --output_file path/to/output.txt
-```
-
 ## Data Processing Pipeline
 
 TransformEw2 implements a comprehensive data processing pipeline:
@@ -99,6 +100,15 @@ TransformEw2 implements a comprehensive data processing pipeline:
 4. **Augmentation**: Applies techniques like word dropout and swapping
 5. **Dataset Creation**: Prepares batched datasets with proper padding and masking
 
+## Data Augmentation
+
+The project includes specialized data augmentation techniques for the Ewe language:
+
+1. **Smart Word Dropout**: Selectively drops words while preserving verbs
+2. **Smart Word Swap**: Swaps adjacent words without disrupting verb positions
+3. **Simulated Back-Translation**: Mimics back-translation effects for low-resource languages
+4. **Function Word Insertion**: Inserts Ewe function words to increase linguistic diversity
+
 ## Model Architecture
 
 The transformer architecture follows the standard encoder-decoder design with:
@@ -108,6 +118,17 @@ The transformer architecture follows the standard encoder-decoder design with:
 - 512 embedding dimensions
 - 2048 feed-forward dimensions
 - Proper output dimension handling for vocabulary mapping
+
+## Testing
+
+```bash
+# Run all tests
+cd tests
+python -m unittest discover
+
+# Run specific test file
+python -m unittest test_data_augmentation.py
+```
 
 ## Contributing
 
