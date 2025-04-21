@@ -1,0 +1,82 @@
++-----------------------------------------------+
+|                 TransformEw2                   |
++-----------------------------------------------+
+                        |
+        +---------------+---------------+
+        |                               |
++-------v-------+               +-------v-------+
+|   Encoder     |               |   Decoder     |
+| (N=6 layers)  |               | (N=6 layers)  |
++-------+-------+               +-------+-------+
+        |                               |
+        |                               |
++-------v-------+               +-------v-------+
+| EncoderLayer  |<--(x6)        | DecoderLayer  |<--(x6)
++-------+-------+               +-------+-------+
+        |                               |
+        |                               |
++-------v-------+               +-------v-------+
+|  Self-Attn    |               |  Self-Attn    |
+| (Improved     |               | (Improved     |
+|  Init) [NEW]  |               |  Init) [NEW]  |
++-------+-------+               +-------+-------+
+        |                               |
+        |                               |
++-------v-------+               +-------v-------+
+|  Feed-Forward |               | Cross-Attn    |
+| (Kaiming Init)| [NEW]         | (Improved     |
+|               |               |  Init) [NEW]  |
++---------------+               +-------+-------+
+                                        |
+                                        |
+                                +-------v-------+
+                                |  Feed-Forward |
+                                | (Kaiming Init)| [NEW]
+                                +---------------+
+
++-----------------------------------------------+
+|                 Components                     |
++-----------------------------------------------+
+
++---------------+   +---------------+   +---------------+
+| Embeddings    |   | MultiHeaded   |   | PositionwiseFF|
+| - Normal Init | [NEW] | Attention    |   | - Kaiming Init| [NEW]
+| - Better      |   | - Xavier Init | [NEW] | - Xavier Init | [NEW]
+|   Scaling     |   | - Returns Attn| [NEW] | - Zero Bias   | [NEW]
++---------------+   +---------------+   +---------------+
+
++---------------+   +---------------+   +---------------+
+| Positional    |   | LayerNorm     |   | Generator     |
+| Encoding      |   | - Same as V1  |   | - Xavier Init | [NEW]
+| - Same as V1  |   | - More        |   | - Dimension   |
+|               |   |   consistent  | [NEW] |   Verification| [NEW]
++---------------+   +---------------+   +---------------+
+
++-----------------------------------------------+
+|                 Key Improvements               |
++-----------------------------------------------+
+| 1. Fixed Dimension Handling [NEW]             |
+| 2. Improved Initialization [NEW]              |
+| 3. Enhanced Attention Mechanism [NEW]         |
+| 4. Support for Gradient Accumulation [NEW]    |
+| 5. More Modular Design [NEW]                  |
+| 6. Better Error Handling and Debugging [NEW]  |
++-----------------------------------------------+
+
++-----------------------------------------------+
+|                 Training Features              |
++-----------------------------------------------+
+| 1. Noam Learning Rate Scheduler [ENHANCED]    |
+| 2. Label Smoothing [ENHANCED]                 |
+| 3. Gradient Accumulation [NEW]                |
+| 4. Early Stopping [NEW]                       |
+| 5. Comprehensive Checkpointing [ENHANCED]     |
++-----------------------------------------------+
+
++-----------------------------------------------+
+|                 Inference Features             |
++-----------------------------------------------+
+| 1. Greedy Decoding [ENHANCED]                 |
+| 2. Beam Search Support [NEW]                  |
+| 3. Interactive Mode [ENHANCED]                |
++-----------------------------------------------+
