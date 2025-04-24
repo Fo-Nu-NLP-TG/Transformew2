@@ -1,0 +1,3 @@
+[submodule "Kolmogorov-Machine"]
+	path = Kolmogorov-Machine
+	url = ./Kolmogorov-Machine
