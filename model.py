@@ -12,11 +12,17 @@ import math
 import copy
 
 
+# The selected code defines a helper function clones that creates multiple identical 
+# copies of a neural network module
 def clones(module, N):
+    # Takes a Pytorch module and an integer N as input
+    # Creates N deep copies of the module using copy.deepcopy()
+    # Returns these copies as a Pytorch nn.ModuleList
     """Produce N identical layers."""
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 
 
+# The selected code defines a class LayerNorm that implements the layer normalization module.
 class LayerNorm(nn.Module):
     """Layer normalization module"""
     
@@ -112,19 +118,35 @@ class Decoder(nn.Module):
             x = layer(x, memory, src_mask, tgt_mask)
         return self.norm(x)
 
-
+# Scaled Dot-Product Attention
 def attention(query, key, value, mask=None, dropout=None):
     """Compute 'Scaled Dot Product Attention'"""
+    # Gets the dimension of the query's last axis (the feature dimension), 
+    # which is used for scaling.
     d_k = query.size(-1)
+    # Computes attention scores by:
+    # 1. Transposing the key matrix (swapping last two dimensions)
+    # 2. Multiplying query with transposed key (dot product)
+    # 3. Scaling by dividing by square root of dimension to prevent extremely small gradients
     scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k)
+    # Applies masking by setting scores to a very negative value (-1e9) 
+    # where mask is 0, effectively making those positions have near-zero 
+    # attention weight after softmax.
     if mask is not None:
         scores = scores.masked_fill(mask == 0, -1e9)
+    # Applies softmax to convert scores into probabilities (attention weights) 
+    # that sum to 1 along the last dimension.
     p_attn = F.softmax(scores, dim=-1)
+    # Applies dropout to attention weights for regularization, 
+    # randomly zeroing some weights to prevent overfitting.
     if dropout is not None:
         p_attn = dropout(p_attn)
+    # Returns:
+    # 1. The weighted sum of values (multiplying attention weights with value matrix)
+    # 2. The attention weights themselves (useful for visualization or further processing)
     return torch.matmul(p_attn, value), p_attn
 
-
+# Multi-Head Attention
 class MultiHeadedAttention(nn.Module):
     """Multi-Head Attention with improved initialization"""
     
@@ -132,12 +154,17 @@ class MultiHeadedAttention(nn.Module):
         super(MultiHeadedAttention, self).__init__()
         assert d_model % h == 0
         # We assume d_v always equals d_k
-        self.d_k = d_model // h
-        self.h = h
+        self.d_k = d_model // h # Dimension of each head
+        self.h = h # Number of heads
+        # Calculate dimension per head
+        # Create 4 linear projections (query, key, value, output)
+        # Store attention weights for visualization
+        # Dropout for regularization
         self.linears = clones(nn.Linear(d_model, d_model), 4)
         self.attn = None
         self.dropout = nn.Dropout(p=dropout)
         
+        # Create 4 linear projections (query, key, value, outpu
         # Improved initialization for attention projections
         for i, linear in enumerate(self.linears):
             # Initialize with smaller weights for stability
@@ -342,3 +369,4 @@ def make_model(src_vocab_size, tgt_vocab_size, N=6, d_model=512, d_ff=2048, h=8,
     print(f"  - Dropout: {dropout}")
     
     return model
+
